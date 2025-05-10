@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake ninja-build
+
+    - name: Build Release
+      run: |
+        cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release
+
+    - name: Test Release Build
+      working-directory: build
+      run: ctest --output-on-failure
+
+    - name: Create Archive
+      run: |
+        mkdir -p release
+        cp build/logixpr release/
+        cp README.md release/
+        cp LICENSE release/
+        tar -czf logixpr-${{ github.ref_name }}-linux.tar.gz -C release .
+        zip -r logixpr-${{ github.ref_name }}-linux.zip release/
+
+    - name: Upload Release Assets
+      uses: actions/upload-artifact@v3
+      with:
+        name: logixpr-${{ github.ref_name }}-linux
+        path: |
+          logixpr-${{ github.ref_name }}-linux.tar.gz
+          logixpr-${{ github.ref_name }}-linux.zip
+
+  create-github-release:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false

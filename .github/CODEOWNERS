@@ -1,0 +1,24 @@
+# Global code owners
+* @elcruzo
+
+# Core logic engine
+src/equivalence_engine.cpp @elcruzo
+include/equivalence_engine.h @elcruzo
+
+# Parser and AST
+src/parser.cpp @elcruzo
+src/ast.cpp @elcruzo
+include/parser.h @elcruzo
+include/ast.h @elcruzo
+
+# Proof search algorithm
+src/proof_search.cpp @elcruzo
+include/proof_search.h @elcruzo
+
+# Tests
+tests/ @elcruzo
+
+# Documentation
+docs/ @elcruzo
+README.md @elcruzo
+CONTRIBUTING.md @elcruzo
