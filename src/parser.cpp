@@ -26,15 +26,15 @@ std::vector<Token> Lexer::tokenize() {
         
         char ch = currentChar();
         
-        if (std::isalpha(ch) || ch == '_') {
-            tokens.push_back(readVariable());
-        } else if (ch == 'T' || ch == 'F') {
+        if (ch == 'T' || ch == 'F') {
             if (ch == 'T') {
                 tokens.emplace_back(TokenType::CONSTANT_TRUE, "T", position);
             } else {
                 tokens.emplace_back(TokenType::CONSTANT_FALSE, "F", position);
             }
             advance();
+        } else if (std::isalpha(ch) || ch == '_') {
+            tokens.push_back(readVariable());
         } else if (ch == '(') {
             tokens.emplace_back(TokenType::LPAREN, "(", position);
             advance();
